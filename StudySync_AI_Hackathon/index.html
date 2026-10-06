@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>StudySync AI</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+</head>
+<body>
+<div class="app">
+  <aside class="sidebar">
+    <div class="brand"><div class="logo">S</div><div><b>StudySync</b><small>AI STUDY PLANNER</small></div></div>
+    <button class="nav active" data-view="dashboard">⌂ <span>Dashboard</span></button>
+    <button class="nav" data-view="planner">◫ <span>Smart Planner</span></button>
+    <button class="nav" data-view="subjects">▣ <span>Subjects</span></button>
+    <button class="nav" data-view="calendar">□ <span>Calendar</span></button>
+    <button class="nav" data-view="analytics">◒ <span>Analytics</span></button>
+    <div class="side-bottom">
+      <div class="mini-card"><b>AI Insight</b><p id="sideInsight">You are doing well. Keep your momentum!</p></div>
+      <button class="logout" onclick="logout()">↪ Logout</button>
+    </div>
+  </aside>
+
+  <main class="main">
+    <header>
+      <div><p class="eyebrow">TUESDAY, OCTOBER 6</p><h1 id="welcome">Good morning 👋</h1><p class="muted">Let's turn your goals into a plan that actually adapts.</p></div>
+      <div class="header-actions"><span class="streak">🔥 <b id="streak">7</b> day streak</span><button class="primary" onclick="openModal()">＋ Add Topic</button></div>
+    </header>
+
+    <section id="dashboard" class="view active-view">
+      <div class="hero">
+        <div><span class="pill">SMART STUDY ENGINE</span><h2>Your plan adapts to <span>you.</span></h2><p>StudySync prioritizes deadlines, difficulty and progress — then reshapes your plan when life gets in the way.</p><button class="dark-btn" onclick="autoReschedule()">✦ Auto-reschedule plan</button></div>
+        <div class="ring-wrap"><div class="ring"><strong id="overall">68%</strong><small>OVERALL</small></div></div>
+      </div>
+
+      <div class="stats">
+        <div class="stat"><span>📚</span><div><small>SUBJECTS</small><b id="statSubjects">5</b></div></div>
+        <div class="stat"><span>✓</span><div><small>COMPLETED</small><b id="statCompleted">12</b></div></div>
+        <div class="stat"><span>◷</span><div><small>HOURS TODAY</small><b>4.5h</b></div></div>
+        <div class="stat warning"><span>!</span><div><small>URGENT</small><b id="statUrgent">3</b></div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel"><div class="panel-head"><div><h3>Today's Focus</h3><p class="muted">Your highest-impact tasks</p></div><button class="link" onclick="showView('planner')">View plan →</button></div><div id="todayList"></div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Subject Progress</h3><p class="muted">Where your effort is going</p></div><button class="link" onclick="showView('analytics')">Details →</button></div><div id="subjectBars"></div></div>
+      </div>
+
+      <div class="grid2">
+        <div class="panel insight"><div class="iconbox">✦</div><div><span class="pill">PERSONALIZED INSIGHT</span><h3 id="mainInsight">Prioritize DSA today</h3><p id="insightText">Your DSA exam is approaching and your topic completion is below your average. Add one extra focused session.</p></div></div>
+        <div class="panel"><div class="panel-head"><div><h3>Upcoming</h3><p class="muted">Exams & deadlines</p></div></div><div id="upcoming"></div></div>
+      </div>
+    </section>
+
+    <section id="planner" class="view">
+      <div class="section-title"><div><p class="eyebrow">ADAPTIVE ENGINE</p><h2>Smart Planner</h2><p class="muted">Tasks are ranked automatically by urgency, difficulty and progress.</p></div><button class="primary" onclick="autoReschedule()">✦ Rebuild Schedule</button></div>
+      <div class="priority-card"><div><b>Priority engine</b><span>Deadline 40% · Difficulty 25% · Low progress 25% · Missed 10%</span></div><div class="legend"><i></i> High <i></i> Medium <i></i> Low</div></div>
+      <div class="panel"><div id="plannerList"></div></div>
+    </section>
+
+    <section id="subjects" class="view">
+      <div class="section-title"><div><p class="eyebrow">YOUR ACADEMICS</p><h2>Subjects & Topics</h2><p class="muted">Track every topic from start to finish.</p></div><button class="primary" onclick="openModal()">＋ Add Topic</button></div>
+      <div id="subjectCards" class="cards"></div>
+    </section>
+
+    <section id="calendar" class="view">
+      <div class="section-title"><div><p class="eyebrow">SCHEDULE</p><h2>Weekly Timetable</h2><p class="muted">A flexible view of your study commitments.</p></div></div>
+      <div class="calendar" id="calendarGrid"></div>
+    </section>
+
+    <section id="analytics" class="view">
+      <div class="section-title"><div><p class="eyebrow">PERFORMANCE</p><h2>Progress Analytics</h2><p class="muted">Understand your study momentum.</p></div></div>
+      <div class="analytics-grid"><div class="panel chart-panel"><h3>Subject Completion</h3><canvas id="barChart"></canvas></div><div class="panel chart-panel"><h3>Weekly Momentum</h3><canvas id="lineChart"></canvas></div></div>
+      <div class="panel weekly"><h3>Weekly Summary</h3><div class="summary-grid"><div><b>18.5h</b><span>Study time</span></div><div><b>84%</b><span>Task completion</span></div><div><b>+12%</b><span>Progress vs last week</span></div><div><b>3</b><span>Topics remaining</span></div></div></div>
+    </section>
+  </main>
+</div>
+
+<div class="modal" id="modal"><div class="modal-box"><button class="close" onclick="closeModal()">×</button><h2>Add a study topic</h2><p class="muted">Give StudySync enough context to prioritize it.</p>
+<form onsubmit="addTopic(event)">
+<label>Subject<input id="fSubject" required placeholder="e.g. Data Structures"></label>
+<label>Topic<input id="fTopic" required placeholder="e.g. Graph Algorithms"></label>
+<div class="two"><label>Difficulty<select id="fDifficulty"><option>Easy</option><option selected>Medium</option><option>Hard</option></select></label><label>Hours<input id="fHours" type="number" min="0.5" step="0.5" value="1"></label></div>
+<label>Deadline<input id="fDeadline" type="date" required></label>
+<button class="primary full">Add & Prioritize</button></form></div></div>
+<div id="toast"></div>
+<script src="app.js"></script>
+</body>
+</html>
